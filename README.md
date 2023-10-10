@@ -79,5 +79,4 @@ airq4cast/
 
 ## Demo
 
-https://github.com/tieukhoimai/ml-airq4cast/assets/57632496/73c36e55-a5da-4895-b2b0-ae65496f21ff
-
+https://github.com/tieukhoimai/ml-airq4cast/assets/57632496/558e90d1-c6dc-43f9-a1dd-b3d93b926553
