@@ -1,10 +1,6 @@
 # AirQ4Cast - Air Quality Forecasting
 
- The second runner-up of Greenovator Hackathon 2021 organized by Bosch Vietnam and Quang Trung Software City (QTSC)
-
-An AI-based application demo on Android Studio that analyzes and predicts the impact that tree cover density and traffic have on the air quality of real-time IoT data and streaming. 
-
-https://english.thesaigontimes.vn/air-quality-monitoring-led-stickers-win-top-prize-at-greenovator-competition/
+An air quality forecasting application by using tree cover density (Landsat8), traffic volumn (Bosch’s AI-powered intelligent CCTV system) and air quality data (Bosch Immission Monitoring Box). Developed as a demo on Android Studio, this project was the [second runner-up of the Greenovator Hackathon 2021](https://english.thesaigontimes.vn/air-quality-monitoring-led-stickers-win-top-prize-at-greenovator-competition/) organized by Bosch Vietnam and Quang Trung Software City (QTSC).
 
 ## About Competition
 
