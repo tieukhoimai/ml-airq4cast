@@ -92,43 +92,57 @@ def add_new_feature(df: DataFrame, match_col: str, new_col: str, feature_df: Dat
     return result
 
 
-def processing_data_for_train():
+def processing_data_for_train(traffic_flag = True, tree_flag = True):
     sensor_data_in_hours = read_file_csv(sensor_dir + "hours")
-
     clean_sensor_hours = clean_sensor_data(sensor_data_in_hours)
 
     # read traffic
-    traffic_data = read_file_csv("hours_traffic_camera")
+    if traffic_flag:
+        traffic_data = read_file_csv("hours_traffic_camera")
+        clean_sensor_hours = add_new_feature(clean_sensor_hours, 'Datetime', "traffic", traffic_data, "value")
+        hours = [datetime.datetime.strptime(clean_sensor_hours.loc[i, 'Datetime'], "%Y-%m-%d %H:%M:%S").hour for i in range(len(clean_sensor_hours))]
+    else:
+        hours = [datetime.datetime.strptime(clean_sensor_hours.loc[i, 'Datetime'], "%Y-%m-%dT%H:%M:%S.000Z").hour for i in range(len(clean_sensor_hours))]
+
     # read tree density
-    tree_data = read_file_csv("tree_density_data")
-    ndvi = tree_data.loc[:, 'NDVI'].values
-    evi = tree_data.loc[:, "EVI"].values
-    if len(ndvi == 1):
-        temp_ndvi = [ndvi[0] for i in range(len(clean_sensor_hours) - 1)]
-        ndvi = np.concatenate((ndvi, temp_ndvi))
-    if len(evi == 1):
-        temp_evi = [evi[0] for i in range(len(clean_sensor_hours)-1)]
-        evi = np.concatenate((evi, temp_evi))
+    if tree_flag:
+        tree_data = read_file_csv("tree_density_data")
+        ndvi = tree_data.loc[:, 'NDVI'].values
+        evi = tree_data.loc[:, "EVI"].values
+        if len(ndvi == 1):
+            temp_ndvi = [ndvi[0] for i in range(len(clean_sensor_hours) - 1)]
+            ndvi = np.concatenate((ndvi, temp_ndvi))
+        if len(evi == 1):
+            temp_evi = [evi[0] for i in range(len(clean_sensor_hours)-1)]
+            evi = np.concatenate((evi, temp_evi))
 
-    clean_sensor_hours['ndvi'] = ndvi
-    clean_sensor_hours['evi'] = evi
+        clean_sensor_hours['ndvi'] = ndvi
+        clean_sensor_hours['evi'] = evi
 
-    # add new features
-
-    clean_sensor_hours = add_new_feature(
-        clean_sensor_hours, 'Datetime', "traffic", traffic_data, "value")
-
-    hours = [datetime.datetime.strptime(
-        clean_sensor_hours.loc[i, 'Datetime'], "%Y-%m-%d %H:%M:%S").hour for i in range(len(clean_sensor_hours))]
-
+    # convert datetime of traffic to hour
     clean_sensor_hours['hours'] = hours
     clean_sensor_hours = clean_sensor_hours.drop(['Datetime'], axis=1)
+
+    # add aqi col
     aqi_sensor_hours = add_aqi_sensor(clean_sensor_hours)
 
-    save_file_csv(aqi_sensor_hours, "data/", "aqi_data_hours")
+    name_of_file = "aqi"
+    if traffic_flag and tree_flag:
+        name_of_file += "_traffic_tree_data"
+    elif not traffic_flag and tree_flag:
+        name_of_file += "_tree_data"
+    elif traffic_flag and not tree_flag:
+        name_of_file += "_traffic_data"
+    else:
+        name_of_file += "_data"
+
+    save_file_csv(aqi_sensor_hours, "data/", name_of_file)
 
 
 processing_data_for_train()
+processing_data_for_train(traffic_flag = True, tree_flag = False)
+processing_data_for_train(traffic_flag = False, tree_flag = True)
+processing_data_for_train(traffic_flag = False, tree_flag = False)
 
 
 # def processing_data_for_real_app():

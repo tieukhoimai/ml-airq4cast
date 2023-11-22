@@ -60,8 +60,8 @@ def get_training_model(X_train, y_train, model="dtree", svm_kernel="rbf", params
     return result
 
 
-def main():
-    aqi_sensor_hours = pd.read_csv("data/aqi_data_hours.csv")
+def get_result(data_name):
+    aqi_sensor_hours = pd.read_csv(f"data/{data_name}.csv")
     values = aqi_sensor_hours.values
 
     lag = 2
@@ -84,7 +84,7 @@ def main():
         y_actual[i] = y_test[i]
     y_act_df = pd.DataFrame.from_dict(y_actual, orient="index").reset_index()
 
-    y_act_df.to_csv("result/y_actual.csv", index=False)
+    y_act_df.to_csv(f"result/{data_name}_y_actual.csv", index=False)
 
     scores = {}
     for m in MODELS:
@@ -92,13 +92,13 @@ def main():
 
         model_trained = get_training_model(X_train, y_train, m)
 
-        file_name = "model/" + m + '.sav'
+        file_name = "model/" + data_name + '_' + m + '.sav'
         pickle.dump(model_trained, open(file_name, 'wb'))
 
         pred_test = model_trained.predict(X_test)
         rmse = np.sqrt(mean_squared_error(y_test, pred_test))
         r_square = r2_score(y_test, pred_test)
-        print(" *"*20, "MODEL: ", m, " *"*20)
+        print(" *"*20, "MODEL: ", data_name, "_", m, " *"*20)
         print("RMSE test: ", rmse)
         print("R-squared test: ", r_square)
         print("\n")
@@ -110,12 +110,16 @@ def main():
             y_pred, orient="index").reset_index()
 
         y_pred_df.to_csv(
-            "result/y_pred_"+m+".csv", index=False)
+            f"result/{data_name}_y_pred_{m}.csv", index=False)
 
     scores_df = pd.DataFrame.from_dict(scores, orient="index").reset_index()
     scores_df.columns = ["model", "rmse", "r_square"]
-    scores_df.to_csv("result/score.csv", index=False)
+    scores_df.to_csv(f"result/{data_name}_score.csv", index=False)
 
 
 if __name__ == '__main__':
-    main()
+
+    data_name_list = ['aqi_data', 'aqi_traffic_tree_data', 'aqi_tree_data', 'aqi_traffic_data']
+
+    for i in data_name_list:
+        get_result(i)

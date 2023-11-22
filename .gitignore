@@ -23,6 +23,8 @@ core
 tags
 .DS_Store
 .directory
+.venv
+.ipynb_checkpoints
 
 # Visual Studio generated files
 *.ib_pdb_index
