@@ -67,11 +67,11 @@ airq4cast/
 
 | |RMSE|R-Squared|
 |:----|:----|:----|
-|Decision Tree|3.863|0.9353|
+|Decision Tree|3.858|0.9355|
 |LightGBM|3.280|0.9533|
-|Random Forest|29.358|0.9626|
-|SVM|25.485|0.9718|
-|XGBoost|35.839|0.9443|
+|Random Forest|2.932|0.9627|
+|SVM|2.540|0.9720|
+|XGBoost|3.258|0.9539|
 
 ## Demo
 
